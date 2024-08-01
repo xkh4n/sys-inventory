@@ -1,0 +1,36 @@
+{
+  "name": "sys-inventory",
+  "version": "1.0.1",
+  "description": "Backend para Sistema de Inventario",
+  "main": "index.js",
+  "scripts": {
+    "prd": "NODE_ENV=prd_ node index.js",
+    "dev": "NODE_ENV=dev_ nodemon index.js",
+    "test": "NODE_ENV=tst_ jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xkh4n/sys-inventory.git"
+  },
+  "author": "Osvaldo Rojas G.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xkh4n/sys-inventory/issues"
+  },
+  "homepage": "https://github.com/xkh4n/sys-inventory#readme",
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "encryptjs": "^2.0.0",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "log4js": "^6.9.1",
+    "mongoose": "^8.5.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  }
+}
