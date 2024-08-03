@@ -14,13 +14,34 @@ const Country = require("../../models/modelCountries");
 /* VALIDATIONS */
 //const validaPais = require("../../libs/validations");
 
+/* CUSTOM ERRORS */
+const errors = require("../../libs/errors");
+
 const getCountryAll = async (req, res) => {
     try {
         const countries = await Country.find();
-        res.status(200).json(countries);
+        if (!countries || countries.length === 0) {
+            const response = {
+                "code": 404,
+                "dataMessage": "No countries found"
+            };
+            throw new errors(404, response);
+        }
+        const response = {
+            "code": 200,
+            "dataMessage": countries
+        }
+        throw new errors(200, response);
     } catch (error) {
-        logger.error("Error fetching all countries:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof errors) {
+            res.status(error.code).send(error.getMessage());
+        } else {
+            const response = {
+                "code": 500,
+                "dataMessage": error.message
+            }
+            res.status(500).json(response);
+        }
     }
 };
 
@@ -61,16 +82,40 @@ const setCountryOne = async (req, res) => {
 };
 
 const setCountryMany = async (req, res) => {
-    const countries = req.body;
-    if (!Array.isArray(countries) || countries.length === 0) {
-        return res.status(400).json({ message: "A non-empty array of countries is required" });
-    }
+    const cant = Object.keys(req.body).length;
+    const promises = [];
     try {
-        const newCountries = await Country.insertMany(countries);
-        res.status(201).json(newCountries);
+        for (let i = 0; i < cant; i ++){
+            const { iso_code, iata_code, name_country } = req.body[i];
+            const country = new Country({ iso_code, iata_code, name_country });
+            promises.push(
+                country.save()
+                    .then()
+                    .catch(() => {
+                        const response = {
+                            "code": 428,
+                            "dataMessage": "Failed in wanting to save the country"
+                        };
+                        throw new errors(428, response);
+                })
+            );
+        }
+        const pais = await Promise.all(promises);
+        const response = {
+            "code": 201,
+            "dataMessage": pais
+        }
+        throw new errors(201, response);
     } catch (error) {
-        logger.error("Error saving countries:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof errors) {
+            res.status(error.code).send(error.getMessage());
+        } else {
+            const response = {
+                "code": 500,
+                "dataMessage": error.message
+            }
+            res.status(500).json(response);
+        }
     }
 };
 

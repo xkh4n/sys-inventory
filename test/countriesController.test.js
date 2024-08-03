@@ -20,20 +20,25 @@ describe('Countries Controller', () => {
         it('should return all countries', async () => {
             const mockCountries = [{ iso_code: 'US', iata_code: 'USA', name_country: 'United States' }];
             Country.find.mockResolvedValue(mockCountries);
-
             const response = await request(app).post('/api/1.0/countries/getcountries');
-
             expect(response.status).toBe(200);
-            expect(response.body).toEqual(mockCountries);
+            expect(response.body.dataMessage).toEqual(mockCountries);
         });
 
+        it('hould return 404 countries is empty', async () => {
+            const mockCountries = [];
+            Country.find.mockResolvedValue(mockCountries);
+            const response = await request(app).post('/api/1.0/countries/getcountries');
+            expect(response.status).toBe(404);
+            expect(response.body.dataMessage).toEqual('No countries found');
+        });
         it('should handle server errors', async () => {
             Country.find.mockRejectedValue(new Error('Server error'));
 
             const response = await request(app).post('/api/1.0/countries/getcountries');
 
             expect(response.status).toBe(500);
-            expect(response.body).toEqual({ message: 'Internal server error' });
+            expect(response.body.dataMessage).toEqual('Server error');
         });
     });
 
@@ -73,7 +78,6 @@ describe('Countries Controller', () => {
         });
     });
 
-    // Similar tests for setCountryOne, setCountryMany, and updateCountry
 
     describe('setCountryOne', () => {
         test('should return status code 201 and a json object', async () => {
@@ -94,4 +98,24 @@ describe('Countries Controller', () => {
             expect(response.body.message).toEqual('Ok')
         });
     });
+
+    describe('setCountryMany', () => {
+        it('should return a 201 code and a json object', async () => {
+            const mockCountry = [
+                { iso_code: "CL", iata_code: "CHL", name_country: "CHILE" },
+                { iso_code: "AF", iata_code: "AFG", name_country: "AFGANISTAN" },
+                { iso_code: "AL", iata_code: "ALB", name_country: "ALBANIA" }
+            ];
+
+            Country.prototype.save = jest.fn().mockResolvedValueOnce(mockCountry[0])
+                                              .mockResolvedValueOnce(mockCountry[1])
+                                              .mockResolvedValueOnce(mockCountry[2]);
+
+            const response = await request(app).post('/api/1.0/countries/setcountries').send(mockCountry);
+
+            expect(response.status).toBe(201);
+            expect(response.body.dataMessage).toEqual(mockCountry);
+        });
+    });
+
 });
