@@ -89,13 +89,8 @@ describe('Countries Controller', () => {
             Country.create.mockResolvedValue(mockCountry);
 
             const response = await request(app).post('/api/1.0/countries/setcountry').send(mockCountry);
-            /*
-            logger.debug(Object.keys(response.body));
-            logger.info(response.body.message);
-            logger.trace(response.status);
-            */
             expect(response.status).toBe(201);
-            expect(response.body.message).toEqual('Ok')
+            expect(response.body.code).toEqual('Ok')
         });
     });
 
@@ -117,5 +112,53 @@ describe('Countries Controller', () => {
             expect(response.body.dataMessage).toEqual(mockCountry);
         });
     });
+
+describe('updateCountry', () => {
+    it('should update a country and return the updated country', async () => {
+        const mockUpdatedCountry = { iso_code: 'US', iata_code: 'USA', name_country: 'United States of America' };
+        Country.findOneAndUpdate.mockResolvedValue(mockUpdatedCountry);
+
+        const response = await request(app).patch('/api/1.0/countries/updatecountry').send({
+            iata_code: 'USA',
+            updateData: { name_country: 'United States of America' }
+        });
+
+        expect(response.status).toBe(202);
+        expect(response.body).toEqual(mockUpdatedCountry);
+    });
+
+    it('should return 400 if IATA code or update data is missing', async () => {
+        const response = await request(app).patch('/api/1.0/countries/updatecountry').send({
+            updateData: { name_country: 'United States of America' }
+        });
+
+        expect(response.status).toBe(400);
+        expect(response.body).toEqual({ message: 'IATA code and update data are required' });
+    });
+
+    it('should return 404 if country not found', async () => {
+        Country.findOneAndUpdate.mockResolvedValue(null);
+
+        const response = await request(app).patch('/api/1.0/countries/updatecountry').send({
+            iata_code: 'XYZ',
+            updateData: { name_country: 'Unknown Country' }
+        });
+
+        expect(response.status).toBe(404);
+        expect(response.body).toEqual({ message: 'Country not found' });
+    });
+
+    it('should handle server errors', async () => {
+        Country.findOneAndUpdate.mockRejectedValue(new Error('Server error'));
+
+        const response = await request(app).patch('/api/1.0/countries/updatecountry').send({
+            iata_code: 'USA',
+            updateData: { name_country: 'United States of America' }
+        });
+
+        expect(response.status).toBe(500);
+        expect(response.body.dataMessage).toEqual('Server error');
+    });
+});
 
 });

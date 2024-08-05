@@ -28,10 +28,10 @@ const getCountryAll = async (req, res) => {
             throw new errors(404, response);
         }
         const response = {
-            "code": 200,
+            "code": "Ok",
             "dataMessage": countries
-        }
-        throw new errors(200, response);
+        };
+        res.status(200).send(response);
     } catch (error) {
         if (error instanceof errors) {
             res.status(error.code).send(error.getMessage());
@@ -57,7 +57,6 @@ const getCountryOne = async (req, res) => {
         }
         res.status(200).json(country);
     } catch (error) {
-        logger.error("Error fetching country:", error.message);
         res.status(500).json({ message: "Internal server error" });
     }
 };
@@ -69,15 +68,22 @@ const setCountryOne = async (req, res) => {
     }
     try {
         const newCountry = new Country({ iso_code, iata_code, name_country });
-        await newCountry.save();
+        const country = await newCountry.save();
         const response = {
-            "message": "Ok",
-            "data":[newCountry]
+            "code": "Ok",
+            "dataMessage": country
         };
-        res.status(201).json(response);
+        res.status(201).send(response);
     } catch (error) {
-        logger.error("Error saving country:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof errors) {
+            res.status(error.code).send(error.getMessage());
+        } else {
+            const response = {
+                "code": 500,
+                "dataMessage": error.message
+            }
+            res.status(500).json(response);
+        }
     }
 };
 
@@ -133,10 +139,17 @@ const updateCountry = async (req, res) => {
         if (!updatedCountry) {
             return res.status(404).json({ message: "Country not found" });
         }
-        res.status(200).json(updatedCountry);
+        res.status(202).json(updatedCountry);
     } catch (error) {
-        logger.error("Error updating country:", error.message);
-        res.status(500).json({ message: "Internal server error" });
+        if (error instanceof errors) {
+            res.status(error.code).send(error.getMessage());
+        } else {
+            const response = {
+                "code": 500,
+                "dataMessage": error.message
+            }
+            res.status(500).json(response);
+        }
     }
 };
 

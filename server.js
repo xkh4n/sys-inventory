@@ -26,7 +26,7 @@ const cors = require("cors");
 
 
 /* ROUTES */
-const { countries } = require("./src/routes");
+const { countries, cities } = require("./src/routes");
 
 
 /* PARSER CONFIG */
@@ -41,6 +41,7 @@ app.use(cors());
 /* ROUTES CONFIG */
 const base_path = '/api/' + process.env.API_VERSION;
 app.use(base_path + '/countries', countries);
+app.use(base_path + '/cities', cities);
 
 
 /* STATICS FOLDERS */

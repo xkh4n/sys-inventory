@@ -6,7 +6,7 @@ api.post('/getcountries', countriesController.getCountryAll);
 api.post('/getcountry', countriesController.getCountryOne);
 api.post('/setcountries', countriesController.setCountryMany);
 api.post('/setcountry', countriesController.setCountryOne);
-api.post('/updatecountry', countriesController.updateCountry);
+api.patch('/updatecountry', countriesController.updateCountry);
 
 
 module.exports = api;
