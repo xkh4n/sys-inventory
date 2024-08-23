@@ -1,0 +1,7 @@
+{
+    "CodeGPT.apiKey": "Ollama",
+    "CodeGPT.Autocomplete.provider": "Ollama - codeqwen:code",
+    "CodeGPT.Autocomplete.enabled": true,
+    "CodeGPT.Autocomplete.maxTokens": 480,
+    "CodeGPT.Autocomplete.suggestionDelay": 600
+}
