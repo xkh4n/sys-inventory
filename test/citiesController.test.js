@@ -139,7 +139,24 @@ describe('Cities Controller Test', () => {
         });
     });
 
-    describe('', () => {
-
+    describe('should return city by country', () => {
+        it('getCityByCountryId', async () => {
+            const mockCountry = [
+                { _id: '66aede2e4298e6ed10e85a9b', iso_code: "CHL", name_country: "Chile" },
+                { _id: '66aede2e4298e6ed10e85aff', iso_code: "LBN", name_country: "Libano" },
+                { _id: '66aede2e4298e6ed10e85aa4', iso_code: "ARG", name_country: "Argentina" }
+            ];
+            const mockCity =[
+                { iso_code: "ANF", name_city: "ANTOFAGASTA", country: "66aede2e4298e6ed10e85a9b", _id: "66b132b550d4491c9390d2d6", __v: 0 },
+                { iso_code: "BBA", name_city: "AYSEN DEL GENERAL CARLOS IBANEZ DEL CAMPO", country: "66aede2e4298e6ed10e85a9b", _id: "66b132b550d4491c9390d2d9", __v: 0 },
+                { iso_code: "BEY", name_city: "BEIRUT", country: "66aede2e4298e6ed10e85aff", _id: "66b132b650d4491c9390d2dc", __v: 0 },
+                { iso_code: "BHI", name_city: "BAHIA BLANCA", country: "66aede2e4298e6ed10e85aa4", _id: "66b224de124f1da78133057b", __v: 0 },
+                { iso_code: "AEP", name_city: "CIUDAD DE BUENOS AIRES", country: "66aede2e4298e6ed10e85aa4", _id: "66b224de124f1da78133057e", __v: 0 },
+                { iso_code: "EZE", name_city: "EZEIZA", country: "66aede2e4298e6ed10e85aa4", _id: "66b224de124f1da781330581", __v: 0 },
+                { iso_code: "LPG", name_city: "LA PLATA", country: "66aede2e4298e6ed10e85aa4", _id: "66b224df124f1da781330584", __v: 0 },
+                { iso_code: "MDZ", name_city: "MENDOZA", country: "66aede2e4298e6ed10e85aa4", _id: "66b224e1124f1da781330587", __v: 0 }
+            ]
+            Country.find
+        });
     });
 });
