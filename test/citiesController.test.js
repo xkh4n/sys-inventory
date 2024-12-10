@@ -156,7 +156,14 @@ describe('Cities Controller Test', () => {
                 { iso_code: "LPG", name_city: "LA PLATA", country: "66aede2e4298e6ed10e85aa4", _id: "66b224df124f1da781330584", __v: 0 },
                 { iso_code: "MDZ", name_city: "MENDOZA", country: "66aede2e4298e6ed10e85aa4", _id: "66b224e1124f1da781330587", __v: 0 }
             ]
-            Country.find
+            Country.findOne.mockResolvedValue(mockCountry);
+            City.prototype.save = jest.fn().mockResolvedValue(mockCity);
+
+            const response = await request(app).post('/api/1.0/cities/getcitybyidcontry').send([
+                { _id: '66aede2e4298e6ed10e85a9b', iso_code: "CHL", name_country: "Chile" }
+            ]);
+            expect(response.status).toBe(204);
+            expect(response.body.dataMessage[0].country).toBe('66aede2e4298e6ed10e85a9b')
         });
     });
 });
